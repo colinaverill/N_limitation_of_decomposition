@@ -19,8 +19,8 @@ h2   <- 0.002    #C-specific desorption rate          (1/time)
 h3   <- 0.001    #fraction of POM that potentially sorbs (1/time)
 
 #initial pool sizes
-C <- 100       #POM               (mg / g)
-M <-  20       #MAOM              (mg / g)
+C <- 100      #POM                (mg / g)
+M <-  20      #MAOM               (mg / g)
 B <- C*0.1    #microbial biomass  (mg / g)
 
 #number of days to step the dynamic simulation through time.
@@ -55,10 +55,10 @@ for(i in 1:t){
   out[i,] <- c(B,C,M)
 }
 
-par(mfrow=c(1,3))
-plot(out[,1])
-plot(out[,2])
-plot(out[,3])
+#par(mfrow=c(1,3))
+#plot(out[,1])
+#plot(out[,2])
+#plot(out[,3])
 
 
 #use stode to get numerical solution for state variables.
@@ -73,7 +73,7 @@ model<- function(t,y,pars){
 }
 
 #define parameters and initial pool sizes.
-pars <- c(CUE=CUE, v1=v1, v2=v2, k1=k1, k2=k2, I=I, h1=h1, h2=h2)
+pars <- c(CUE=CUE, v1=v1, v2=v2, k1=k1, k2=k2, I=I, h1=h1, h2=h2, h3=h3)
 y <- c(B=B,C=C,M=M)
 
 #numerically solve the model.
