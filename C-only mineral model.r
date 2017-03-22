@@ -56,11 +56,11 @@ for(i in 1:t){
   out[i,] <- c(B,C,M,test)
 }
 
-par(mfrow=c(1,3))
-plot(out[,1])
-plot(out[,2])
-plot(out[,3])
-plot(out[,4])
+par(mfrow=c(2,2))
+plot(out[,1], ylab="Biomass C")
+plot(out[,2], ylab="POM C")
+plot(out[,3], ylab="MAOM C")
+plot(out[,4], ylab="dCdt")
 
 
 #use stode to get numerical solution for state variables.
