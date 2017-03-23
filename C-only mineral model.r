@@ -27,7 +27,7 @@ B <- C*0.1    #microbial biomass  (mg / g)
 t <- 1500
 
 #choose outputs you want to follow. In this case, the 3 state variables. 
-outputs <- c('B','C','M')
+outputs <- c('B','C','M','test')
 out <- matrix(rep(0,t*length(outputs)),nrow=t,dimnames=list(NULL,outputs))
 
 
@@ -50,15 +50,18 @@ for(i in 1:t){
   B <- B + dBdt
   C <- C + dCdt
   M <- M + dMdt
+  test <- dCdt
   
   #save outputs
-  out[i,] <- c(B,C,M)
+  out[i,] <- c(B,C,M,test)
 }
 
-#par(mfrow=c(1,3))
-#plot(out[,1])
-#plot(out[,2])
-#plot(out[,3])
+
+par(mfrow=c(2,2))
+plot(out[,1], ylab="Biomass C")
+plot(out[,2], ylab="POM C")
+plot(out[,3], ylab="MAOM C")
+plot(out[,4], ylab="dCdt")
 
 
 #use stode to get numerical solution for state variables.
