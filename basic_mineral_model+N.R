@@ -58,7 +58,7 @@ for(i in 1:t){
   SORPTION.P.C <- (POM2MOM.C/(POM2MOM.C+DEATH.C))*SORPTION.C
   DESORPTION.C <- h2*M
   
-  DEATH.N      <- h1*N3
+  DEATH.N      <- h1*N3^1.5
   DECOMP.N     <- (v1*B*C / (k1 + C))/(C/N1)
   POM2MOM.N    <- (h3*C)/(C/N1)
   SORPTION.N   <- v2*(POM2MOM.N+DEATH.N) / (k2 + POM2MOM.N+DEATH.N)
