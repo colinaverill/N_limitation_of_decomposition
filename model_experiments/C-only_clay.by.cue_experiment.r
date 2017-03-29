@@ -11,7 +11,7 @@ require(wesanderson)
 source('model_functions/C_model.r')
 
 #Specify range of CUE values. Lower than CUE=0.13 we don't get a steady state. 
-cue.range <- seq(0.13,0.6, by = 0.01)
+cue.range <- seq(0.15,0.65, by = 0.01)
 #create a matrix to store outputs of loop.
 out <- matrix(rep(0,length(cue.range)*4),nrow=length(cue.range),dimnames=list(NULL,c('B','C','M','tot')))
 
@@ -31,6 +31,7 @@ saveRDS(out,'experiment_output/no_clay.C_only.rds')
 
 #test plot.
 cols <- wes_palette("Zissou", 5)
+par(mfrow=c(1,1))
 plot(tot ~ CUE, data = out, ylim = c(0,100), cex = 0, ylab = 'mg C per g soil')
 lines(smooth.spline(out$tot~out$CUE), lwd=2)
 lines(smooth.spline(out$C  ~out$CUE), lwd=2, col=cols[1])

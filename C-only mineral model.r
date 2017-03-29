@@ -10,18 +10,18 @@ rm(list=ls())
 #parameters
 I    <- 1.0      #C input rate                        (mg time-1)
 CUE  <- 0.3      #carbon use efficiency               (unitless)
-v1   <- .4       #biomass-specific decay multiplier   (mg time-1)
+v1   <- .5       #biomass-specific decay multiplier   (mg time-1)
 v2   <- 1        #Vmax of sorption                    (mg time-1)
 k1   <- 100      #half saturation of decomp           (mg)
 k2   <- 10       #half saturation of sorption         (mg)
-h1   <- 0.05     #biomass turnover rate               (1/time)
+h1   <- 0.02     #biomass turnover rate               (1/time)
 h2   <- 0.002    #C-specific desorption rate          (1/time)
 h3   <- 0.001    #fraction of POM that potentially sorbs (1/time)
 
 #initial pool sizes
-C <- 100      #POM                (mg / g)
-M <-  20      #MAOM               (mg / g)
-B <- C*0.1    #microbial biomass  (mg / g)
+C <- 71      #POM                (mg / g)
+M <- 24      #MAOM               (mg / g)
+B <-  8.6   #microbial biomass  (mg / g)
 
 #number of days to step the dynamic simulation through time.
 t <- 1500
@@ -33,7 +33,7 @@ out <- matrix(rep(0,t*length(outputs)),nrow=t,dimnames=list(NULL,outputs))
 
 for(i in 1:t){
   #defining fluxes
-  DEATH      <- h1*B
+  DEATH      <- h1*B^1.5
   DECOMP     <- v1*B*C / (k1 + C)
   POM2MOM    <- h3*C
   SORPTION   <- v2*(POM2MOM+DEATH) / (k2 + POM2MOM+DEATH)
@@ -68,9 +68,9 @@ plot(out[,4], ylab="dCdt")
 require(rootSolve)
 model<- function(t,y,pars){
   with(as.list(c(y,pars)),{
-    dBdt <- CUE * v1 * B * C / (k1 + C) - h1*B
-    dCdt <- I + (h1*B - (h1*B  /(h3*C+h1*B))*v2*(h3*C+h1*B) / (k2 + h3*C+h1*B)) + h2*M - v1 * B * C / (k1 + C) - (h3*C/(h3*C+h1*B))*v2*(h3*C+h1*B) / (k2 + h3*C+h1*B)
-    dMdt <- v2*(h3*C+h1*B) / (k2 + h3*C+h1*B) - h2*M
+    dBdt <- CUE * v1 * B * C / (k1 + C) - h1*B^1.5
+    dCdt <- I + (h1*B^1.5 - (h1*B^1.5  /(h3*C+h1*B^1.5))*v2*(h3*C+h1*B^1.5) / (k2 + h3*C+h1*B^1.5)) + h2*M - v1 * B * C / (k1 + C) - (h3*C/(h3*C+h1*B^1.5))*v2*(h3*C+h1*B^1.5) / (k2 + h3*C+h1*B^1.5)
+    dMdt <- v2*(h3*C+h1*B^1.5) / (k2 + h3*C+h1*B^1.5) - h2*M
     list(c(dBdt,dCdt,dMdt))
   })
 }
