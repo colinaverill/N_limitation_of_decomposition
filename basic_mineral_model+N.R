@@ -23,6 +23,7 @@ k2   <- 10       #half saturation of sorption         (mg)
 h1   <- 0.02    #biomass turnover rate               (1/time)
 h2   <- 0.002    #C-specific desorption rate          (1/time)
 h3   <- 0.001    #fraction of POM that potentially sorbs (1/time)
+h4 <- 0.01       #inorganic N loss rate
 
 #parameters: N cycling
 IN <- 50 #C:N ratio of inputs
@@ -103,7 +104,7 @@ for(i in 1:t){
   N1 <- N1 + dN1dt
   N2 <- N2 + dN2dt
   N3 <- N3 + dN3dt
-  N4 <- N4 + dN4dt
+  N4 <- N4 + dN4dt - (h4*N4)
   if (N4 > 0) {N4=N4} else {N4 = 0} #inorganic N pool cannot be negative
   
   
