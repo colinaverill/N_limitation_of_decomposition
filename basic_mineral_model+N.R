@@ -59,12 +59,12 @@ for(i in 1:t){
   DESORPTION.C <- h2*M
   
   DEATH.N      <- h1*N3
-  DECOMP.N     <- (v1*B*C / (k1 + C))/CN
-  POM2MOM.N    <- (h3*C)/CN
+  DECOMP.N     <- (v1*B*C / (k1 + C))/(C/N1)
+  POM2MOM.N    <- (h3*C)/(C/N1)
   SORPTION.N   <- v2*(POM2MOM.N+DEATH.N) / (k2 + POM2MOM.N+DEATH.N)
   SORPTION.B.N <- (DEATH.N  /(POM2MOM.N+DEATH.N))*SORPTION.N
   SORPTION.P.N <- (POM2MOM.N/(POM2MOM.N+DEATH.N))*SORPTION.N
-  DESORPTION.N <- (h2*M)/MN
+  DESORPTION.N <- (h2*M)/(M/N2)
   
 
   #ODEs
