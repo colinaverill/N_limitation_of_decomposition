@@ -20,7 +20,7 @@ v1   <- .4       #biomass-specific decay multiplier   (mg time-1)
 v2   <- 1        #Vmax of sorption                    (mg time-1)
 k1   <- 100      #half saturation of decomp           (mg)
 k2   <- 10       #half saturation of sorption         (mg)
-h1   <- 0.05     #biomass turnover rate               (1/time)
+h1   <- 0.02    #biomass turnover rate               (1/time)
 h2   <- 0.002    #C-specific desorption rate          (1/time)
 h3   <- 0.001    #fraction of POM that potentially sorbs (1/time)
 
@@ -50,7 +50,7 @@ out <- matrix(rep(0,t*length(outputs)),nrow=t,dimnames=list(NULL,outputs))
 
 for(i in 1:t){
   #defining fluxes
-  DEATH.C      <- h1*B
+  DEATH.C      <- h1*B^1.5
   DECOMP.C     <- v1*B*C / (k1 + C)
   POM2MOM.C    <- h3*C
   SORPTION.C   <- v2*(POM2MOM.C+DEATH.C) / (k2 + POM2MOM.C+DEATH.C)
