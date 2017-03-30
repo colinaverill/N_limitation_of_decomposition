@@ -126,16 +126,19 @@ plot(out[,8], ylab="inorganic N")
 require(rootSolve)
 model<- function(t,y,pars){
   with(as.list(c(y,pars)),{
-    dBdt <- CUE * v1 * B * C / (k1 + C) - h1*B
-    dCdt <- I + (h1*B - (h1*B  /(h3*C+h1*B))*v2*(h3*C+h1*B) / (k2 + h3*C+h1*B)) + h2*M - v1 * B * C / (k1 + C) - (h3*C/(h3*C+h1*B))*v2*(h3*C+h1*B) / (k2 + h3*C+h1*B)
-    dMdt <- v2*(h3*C+h1*B) / (k2 + h3*C+h1*B) - h2*M
-    list(c(dBdt,dCdt,dMdt))
+  dBdt <- (CUE * (v1*B*C / (k1 + C))) - (h1*B^1.5)
+  dCdt <- I + ((h1*B^1.5) - (((h1*B^1.5)  /((h3*C)+(h1*B^1.5)))*(v2*((h3*C)+(h1*B^1.5)) / (k2 + (h3*C)+(h1*B^1.5))))) + h2*M - (v1*B*C / (k1 + C)) - (((h3*C)/((h3*C)+(h1*B^1.5)))*(v2*((h3*C)+(h1*B^1.5)) / (k2 + (h3*C)+(h1*B^1.5))))
+  dMdt <- (v2*((h3*C)+(h1*B^1.5)) / (k2 + (h3*C)+(h1*B^1.5))) - h2*M
+  dRdt <- (1-CUE)*(v1*B*C / (k1 + C))
+  dN1dt <- (I/IN) + ((h1*N3^1.5) - (((h1*N3^1.5)/(((h3*C)/(C/N1))+(h1*N3^1.5)))*(v2*(((h3*C)/(C/N1))+(h1*N3^1.5)) / (k2 + ((h3*C)/(C/N1)) + (h1*N3^1.5))))) + ((h2*M)/(M/N2)) - ((v1*B*C / (k1 + C))/(C/N1)) - ((((h3*C)/(C/N1))/(((h3*C)/(C/N1))+(h1*N3^1.5)))*(v2*(((h3*C)/(C/N1))+(h1*N3^1.5)) / (k2 + (h3*C)/(C/N1)+(h1*N3^1.5))))
+ dN2dt <- (v2*(((h3*C)/(C/N1))+(h1*N3^1.5)) / (k2 + ((h3*C)/(C/N1))+(h1*N3^1.5))) - ((h2*M)/(M/N2))
+   list(c(dBdt, dCdt, dMdt, dN1dt, dN2dt))
   })
 }
 
 #define parameters and initial pool sizes.
-pars <- c(CUE=CUE, v1=v1, v2=v2, k1=k1, k2=k2, I=I, h1=h1, h2=h2)
-y <- c(B=B,C=C,M=M)
+pars <- c(CUE=CUE, NUE=NUE, BN=BN, I=I, IN=IN, v1=v1, v2=v2, k1=k1, k2=k2, h1=h1, h2=h2, h3=h3)
+y <- c(B=B, C=C, M=M, N1=N1, N2=N2)
 
 #numerically solve the model.
 ST <- stode(y=y,func=model,parms=pars,pos=T)
