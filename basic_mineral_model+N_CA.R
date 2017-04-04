@@ -72,7 +72,7 @@ for(i in 1:t){
   
   #MINERALIZATION-IMMOBILIZATION.
   #N uptake minus demand. If in excess, positive. If limited, negative.
-  mineralization.immobilization <- (DECOMP.N) - (CUE * DECOMP.C) / BN
+  mineralization.immobilization <- (NUE * DECOMP.N) - (CUE * DECOMP.C) / BN
   if(mineralization.immobilization  > 0) {
     #if in excess (+ value), mineralize. 
     mineralization <- mineralization.immobilization
