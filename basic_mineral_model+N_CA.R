@@ -81,7 +81,7 @@ for(i in 1:t){
   if(mineralization.immobilization <= 0) {
     #if in debt (- value), immobilize, w/ non-linear uptake kinetics.
     mineralization = 0
-    immobilization.potential <- (N4 / (k3 + N4)) * N4
+    immobilization.potential <- ((N4 / (k3 + N4)) * N4) * NUE
     immobilization <- immobilization.potential
         #however, don't take up more N than you need.
         if(immobilization > abs(mineralization.immobilization)){
