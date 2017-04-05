@@ -50,7 +50,7 @@ N4 <- 0.001	  #inorganic N pool size 		(mg / g)
 t <- 1500
 
 #choose outputs you want to follow. 
-outputs <- c('C','M','B','R','N1','N2','N3','N4')
+outputs <- c('C','M','B','R','N1','N2','N3','N4','CUE_emergent','NUE_emergent')
 out <- matrix(rep(0,t*length(outputs)),nrow=t,dimnames=list(NULL,outputs))
 
 
@@ -114,6 +114,10 @@ for(i in 1:t){
   dN3dt <- DECOMP.N*NUE + immobilization - mineralization - DEATH.N
   dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
   
+  #emergent CUE and NUE
+  CUE_emergent <- ((CUE*DECOMP.C)-overflow.R)/DECOMP.C
+  NUE_emergent <- ((NUE*DECOMP.N)-mineralization)/DECOMP.N
+  
   #respiration
   resp  <- (1-CUE)*DECOMP.C
   
@@ -128,7 +132,7 @@ for(i in 1:t){
   R  <- resp
   
   #save outputs
-  out[i,] <- c(C,M,B,R,N1,N2,N3,N4)
+  out[i,] <- c(C,M,B,R,N1,N2,N3,N4,CUE_emergent,NUE_emergent)
 }
 
 par(mfrow=c(3,3))
@@ -148,3 +152,7 @@ par(new=T)
 plot(out[,3]/out[,7], cex = 0.1, col='red'  , ylim = c(0,40))
 #print C pools and their sums
 C;M;B;C+B+M
+#examine 'emergent' CUE and NUE
+summary(out[,9])
+summary(out[,10])
+            
