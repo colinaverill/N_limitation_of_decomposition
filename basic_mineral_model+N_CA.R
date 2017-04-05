@@ -63,12 +63,12 @@ for(i in 1:t){
   
   #N fluxes
   DEATH.N      <- DEATH.C / BN
-  DECOMP.N     <- DECOMP.C/(C/N1)
-  POM2MOM.N    <- POM2MOM.C/(C/N1)
+  DECOMP.N     <- DECOMP.C/CN
+  POM2MOM.N    <- POM2MOM.C/CN
   SORPTION.N   <- v2*(POM2MOM.N+DEATH.N) / (k2 + POM2MOM.N+DEATH.N)
   SORPTION.B.N <- (DEATH.N  /(POM2MOM.N+DEATH.N))*SORPTION.N
   SORPTION.P.N <- (POM2MOM.N/(POM2MOM.N+DEATH.N))*SORPTION.N
-  DESORPTION.N <- DESORPTION.C/(M/N2)
+  DESORPTION.N <- DESORPTION.C/MN
   
   #MINERALIZATION-IMMOBILIZATION.
   #N uptake minus demand. If in excess, positive. If limited, negative.
