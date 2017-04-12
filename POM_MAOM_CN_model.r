@@ -16,7 +16,7 @@ rm(list=ls())
 #parameters: C cycling
 #WARNING. Most parameters can change the position of C vs. N limitation ~ input CN.
 #If you change things, make sure you are always checking where C vs N limitation is. 
-I    <- 1.0      #C input rate                           (mg time-1)
+I    <- 1        #C input rate                           (mg time-1)
 CUE  <- 0.3      #carbon use efficiency                  (unitless)
 NUE  <- 1 		   #N use efficiency					             (unitless)
 v1   <- .4       #biomass-specific decay multiplier      (mg time-1)
@@ -31,7 +31,7 @@ h4   <- 0.9      #inorganic N loss rate
 h5   <- 0.01     #exogenous losses of POM                (1/time)
 
 #parameters: N cycling
-IN <- 20 #C:N ratio of inputs (constant). 20=C limitation, 50=N limitation
+IN <- 50 #C:N ratio of inputs (constant). 20=C limitation, 50=N limitation
 CN <- 50 #C:N ratio of initial particulate organic matter (will change)
 MN <- 25 #C:N ratio of initial mineral-associated organic matter (will change)
 BN <-  7 #C:N ratio of the microbial biomass (constant)
@@ -40,7 +40,6 @@ BN <-  7 #C:N ratio of the microbial biomass (constant)
 C <- 100      #C pool in POM            (mg / g)
 M <-  20      #C pool in MAOM           (mg / g)
 B <- C*0.1    #microbial biomass C 			(mg / g)
-R <- 0        # respired C				    	(mg / g)
 N1 <- C/CN    #initial N pool in POM		(mg / g)
 N2 <- M/MN	  #N pool in MAOM 			  	(mg / g)
 N3 <- B/BN    #microbial biomass N			(mg / g)
@@ -74,7 +73,7 @@ for(i in 1:t){
   SORPTION.B.N <- (DEATH.N  /(POM2MOM.N+DEATH.N))*SORPTION.N
   SORPTION.P.N <- (POM2MOM.N/(POM2MOM.N+DEATH.N))*SORPTION.N
   DESORPTION.N <- DESORPTION.C/(M/N2)
-  
+
   #MINERALIZATION-IMMOBILIZATION.
   #N uptake minus demand. If in excess, positive. If limited, negative.
   mineralization.immobilization <- (DECOMP.N) - (CUE * DECOMP.C) / BN
@@ -93,6 +92,7 @@ for(i in 1:t){
       immobilization = abs(mineralization.immobilization)
     }
   }
+  
   #leaching/plant uptake happens on post-mineralization/immobilization inorganic N pool.
   INORG.N.LOSS <- h4*(N4 + mineralization - immobilization)
   
@@ -113,9 +113,9 @@ for(i in 1:t){
   dN2dt <- SORPTION.N - DESORPTION.N
   dN3dt <- DECOMP.N*NUE + immobilization - mineralization - DEATH.N
   dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
-  
+
   #respiration
-  resp  <- (1-CUE)*DECOMP.C
+  resp  <- (1-CUE)*DECOMP.C + overflow.R
   
   #update pools
   C  <- C  + dCdt
