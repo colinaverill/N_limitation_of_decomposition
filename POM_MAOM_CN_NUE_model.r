@@ -1,5 +1,6 @@
 #Building a linked C-N model examining N fertilization effects on POM and MAOM formation. 
 ###Colin Averill and Bonnie Waring, 2017
+#Colin Adds NUE effects on April 20, 2017.
 
 ###ASSUMPTIONS###
 # CUE, NUE and C:N stoichiometry icrobial biomass is fixed
@@ -13,41 +14,24 @@
 #clear R environment.
 rm(list=ls())
 
-#parameters: C cycling
-#WARNING. Most parameters can change the position of C vs. N limitation ~ input CN.
-#If you change things, make sure you are always checking where C vs N limitation is. 
-I    <- 1        #C input rate                           (mg time-1) #target     0.03, based on Allison 2010.
-CUE  <- 0.3      #carbon use efficiency                  (unitless)
-NUE  <- 1 		   #N use efficiency					             (unitless)
-v1   <- .4       #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
-v2   <- 1        #Vmax of sorption                       (mgC time-1)
-k1   <- 200      #half saturation of decomp              (mg)        #target ~   33.3, based on Wieder 2014
-k2   <- 10       #half saturation of sorption            (mg)
-k3   <- 0.001    #half saturation of inorganic N uptake  (mg)
-h1   <- 0.01     #biomass turnover rate                  (1/time)    #target ~ 0.0108, based on Wieder 2014
-h2   <- 0.002    #C-specific desorption rate             (1/time)
-h3   <- 0.001    #fraction of POM that potentially sorbs (1/time)
-h4   <- 0.9      #inorganic N loss rate                  (1/time)
-h5   <- 0.01     #exogenous losses of POM                (1/time)
-
 #Colin is tuning!
 #lesson- exo.loss makes it easier to hit N limitation
 #this is because its losing low C:N POM faster, and so input C:N increasingly dictates POM C:N.
-I    <- 0.01     #C input rate                            (mg time-1) #target     0.03, based on Allison 2010.
+I    <- 0.015     #C input rate                            (mg time-1) #target     0.03, based on Allison 2010.
 CUE  <- 0.3      #carbon use efficiency                   (unitless)
-NUE  <- 1 		   #N use efficiency					              (unitless)
+NUE  <- .8 		   #N use efficiency					              (unitless)
 #v1   <- .005      #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
-v1   <- .005      #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
+v1   <- .017      #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
 v2   <- 1        #Vmax of sorption                        (mgC time-1)
 k1   <- 33       #half saturation of decomp               (mg)        #target ~   33.3, based on Wieder 2014
 k2   <- 10       #half saturation of sorption             (mg)
-k3   <- 0.001    #half saturation of inorganic N uptake   (mg)
-h1   <- 0.001    #biomass turnover rate                  (1/time)    #target ~ 0.0108, based on Wieder 2014 - this is right on at SS, given we have an exponential on biomass turnover. 
-h2   <- 0.002    #C-specific desorption rate              (1/time)
+k3   <- 0.01     #half saturation of inorganic N uptake   (mg)
+h1   <- 0.003    #biomass turnover rate                  (1/time)    #target ~ 0.0108, based on Wieder 2014 - this is right on at SS, given we have an exponential on biomass turnover. 
+h2   <- 0.001    #C-specific desorption rate              (1/time)
 h3   <- 0.0002     #fraction of POM that potentially sorbs (1/time)
 h4   <- 0.2       #inorganic N loss rate                  (1/time)
 #h5   <- 0.0001    #exogenous losses of POM                (1/time)
-h5   <- 0.00001    #exogenous losses of POM                (1/time)
+h5   <- 0.00005    #exogenous losses of POM                (1/time)
 #parameters: N cycling
 IN <- 50 #C:N ratio of inputs (constant). 20=C limitation, 50=N limitation
 CN <- 50 #C:N ratio of initial particulate organic matter (will change)
@@ -91,10 +75,10 @@ for(i in 1:t){
   SORPTION.B.N <- (DEATH.N  /(POM2MOM.N+DEATH.N))*SORPTION.N
   SORPTION.P.N <- (POM2MOM.N/(POM2MOM.N+DEATH.N))*SORPTION.N
   DESORPTION.N <- DESORPTION.C/(M/N2)
-
+  
   #MINERALIZATION-IMMOBILIZATION.
   #N uptake minus demand. If in excess, positive. If limited, negative.
-  mineralization.immobilization <- (DECOMP.N) - (CUE * DECOMP.C) / BN
+  mineralization.immobilization <- (NUE * DECOMP.N) - (CUE * DECOMP.C) / BN
   if(mineralization.immobilization  > 0) {
     #if in excess (+ value), mineralize. 
     mineralization <- mineralization.immobilization
@@ -103,7 +87,7 @@ for(i in 1:t){
   if(mineralization.immobilization <= 0) {
     #if in debt (- value), immobilize, w/ non-linear uptake kinetics.
     mineralization = 0
-    immobilization.potential <- ((N4 / (k3 + N4)) * N4) * NUE
+    immobilization.potential <- ((N4 / (k3 + N4)) * N4)
     immobilization <- immobilization.potential
     #however, don't take up more N than you need.
     if(immobilization > abs(mineralization.immobilization)){
@@ -112,7 +96,8 @@ for(i in 1:t){
   }
   
   #leaching/plant uptake happens on post-mineralization/immobilization inorganic N pool.
-  INORG.N.LOSS <- h4*(N4 + mineralization - immobilization)
+  #Make sure to include inputs to N4 from imperfect NUE values
+  INORG.N.LOSS <- h4*(N4 + DECOMP.N*(1-NUE) + mineralization - immobilization)
   
   #OVERFLOW RESPIRATION
   #excess C uptake must go somewhere because mass balance.
@@ -120,7 +105,7 @@ for(i in 1:t){
     overflow.R = 0
   }
   if(mineralization.immobilization <= 0){  
-    overflow.R <- DECOMP.C*CUE - (DECOMP.N + immobilization)*BN
+    overflow.R <- DECOMP.C*CUE - (DECOMP.N*NUE + immobilization)*BN
   }
   
   #ODEs
@@ -131,7 +116,7 @@ for(i in 1:t){
   dN2dt <- SORPTION.N - DESORPTION.N
   dN3dt <- DECOMP.N*NUE + immobilization - mineralization - DEATH.N
   dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
-
+  
   #respiration
   resp  <- (1-CUE)*DECOMP.C + overflow.R
   
@@ -168,3 +153,7 @@ par(new=T)
 plot(out[,3]/out[,7], cex = 0.1, col='red'  , ylim = c(0,55))
 #print C pools and their sums
 C;M;B;C+B+M
+#N limitation? 
+mineralization.immobilization < 0
+#biomass turnover rate
+B/(h1*(B^1.5))
