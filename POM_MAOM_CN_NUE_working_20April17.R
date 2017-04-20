@@ -17,7 +17,7 @@ rm(list=ls())
 #Colin is tuning!
 #lesson- exo.loss makes it easier to hit N limitation
 #this is because its losing low C:N POM faster, and so input C:N increasingly dictates POM C:N.
-I    <- 0.015     #C input rate                            (mg time-1) #target     0.03, based on Allison 2010.
+I    <- 0.03     #C input rate                            (mg time-1) #target     0.03, based on Allison 2010.
 CUE  <- 0.3      #carbon use efficiency                   (unitless)
 NUE  <- .8 		   #N use efficiency					              (unitless)
 #v1   <- .005      #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
@@ -28,7 +28,7 @@ k2   <- 10       #half saturation of sorption             (mg)
 k3   <- 0.01     #half saturation of inorganic N uptake   (mg)
 h1   <- 0.003    #biomass turnover rate                  (1/time)    
 h2   <- 0.001    #C-specific desorption rate              (1/time)
-h3   <- 0.0002     #fraction of POM that potentially sorbs (1/time)
+h3   <- 0.00001     #fraction of POM that potentially sorbs (1/time)
 h4   <- 0.2       #inorganic N loss rate                  (1/time)
 #h5   <- 0.0001    #exogenous losses of POM                (1/time)
 h5   <- 0.00005    #exogenous losses of POM                (1/time)
@@ -48,13 +48,13 @@ N3 <- B/BN    #microbial biomass N			(mg / g)
 N4 <- 0.001	  #inorganic N pool size 		(mg / g)
 
 #number of days to step the dynamic simulation through time.
-t <- 100000
+t <- 400000
 
 #choose outputs you want to follow. 
-outputs <- c('C','M','B','R','N1','N2','N3','N4''CUE','NUE')
+outputs <- c('C','M','B','R','N1','N2','N3','N4','CUE','NUE')
 out <- matrix(rep(0,t*length(outputs)),nrow=t,dimnames=list(NULL,outputs))
-N_addition <- c(rep(0,7500), rep(0.01,7500))
-C_addition <- c(rep(0,7500), rep(0.0, 7500))
+N_addition <- c(rep(0,200000), rep(0.01,200000))
+C_addition <- c(rep(0,200000), rep(0.0,200000))
 timeline <- 1:t
 fert <- cbind(timeline, N_addition, C_addition)
 
