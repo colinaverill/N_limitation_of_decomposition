@@ -13,7 +13,7 @@
 #clear R environment.
 rm(list=ls())
 
-#parameters: C cycling
+#parameters: C cycling - OLD PARAMETERS. 
 #WARNING. Most parameters can change the position of C vs. N limitation ~ input CN.
 #If you change things, make sure you are always checking where C vs N limitation is. 
 I    <- 1        #C input rate                           (mg time-1) #target     0.03, based on Allison 2010.
@@ -36,13 +36,12 @@ h5   <- 0.01     #exogenous losses of POM                (1/time)
 I    <- 0.01     #C input rate                            (mg time-1) #target     0.03, based on Allison 2010.
 CUE  <- 0.3      #carbon use efficiency                   (unitless)
 NUE  <- 1 		   #N use efficiency					              (unitless)
-#v1   <- .005      #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
 v1   <- .005      #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
 v2   <- 1        #Vmax of sorption                        (mgC time-1)
 k1   <- 33       #half saturation of decomp               (mg)        #target ~   33.3, based on Wieder 2014
 k2   <- 10       #half saturation of sorption             (mg)
 k3   <- 0.001    #half saturation of inorganic N uptake   (mg)
-h1   <- 0.001    #biomass turnover rate                  (1/time)    #target ~ 0.0108, based on Wieder 2014 - this is right on at SS, given we have an exponential on biomass turnover. 
+h1   <- 0.001    #biomass turnover rate                  (1/time) 
 h2   <- 0.002    #C-specific desorption rate              (1/time)
 h3   <- 0.0002     #fraction of POM that potentially sorbs (1/time)
 h4   <- 0.2       #inorganic N loss rate                  (1/time)

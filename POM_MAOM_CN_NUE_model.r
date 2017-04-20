@@ -26,7 +26,7 @@ v2   <- 1        #Vmax of sorption                        (mgC time-1)
 k1   <- 33       #half saturation of decomp               (mg)        #target ~   33.3, based on Wieder 2014
 k2   <- 10       #half saturation of sorption             (mg)
 k3   <- 0.01     #half saturation of inorganic N uptake   (mg)
-h1   <- 0.003    #biomass turnover rate                  (1/time)    #target ~ 0.0108, based on Wieder 2014 - this is right on at SS, given we have an exponential on biomass turnover. 
+h1   <- 0.003    #biomass turnover rate                  (1/time)    
 h2   <- 0.001    #C-specific desorption rate              (1/time)
 h3   <- 0.0002     #fraction of POM that potentially sorbs (1/time)
 h4   <- 0.2       #inorganic N loss rate                  (1/time)
