@@ -17,26 +17,25 @@ rm(list=ls())
 #Colin is tuning!
 #lesson- exo.loss makes it easier to hit N limitation
 #this is because its losing low C:N POM faster, and so input C:N increasingly dictates POM C:N.
-I    <- 0.015     #C input rate                            (mg time-1) #target     0.03, based on Allison 2010.
-CUE  <- 0.3      #carbon use efficiency                   (unitless)
+I    <- 0.03     #C input rate                            (mgC time-1)
+CUE  <- 0.4      #C use efficiency
 NUE  <- .8 		   #N use efficiency					              (unitless)
-#v1   <- .005      #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
-v1   <- .017      #biomass-specific decay multiplier      (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
-v2   <- 1        #Vmax of sorption                        (mgC time-1)
-k1   <- 33       #half saturation of decomp               (mg)        #target ~   33.3, based on Wieder 2014
-k2   <- 10       #half saturation of sorption             (mg)
+v1   <- 0.013    #biomass-specific decay multiplier       (mgC mgB-1 time-1) #target ~ 0.0013, based on Wieder 2014
+v2   <- 2.5      #Vmax of sorption                        (mgC time-1)
+k1   <- 30       #half saturation of decomp               (mg)        #target ~   33.3, based on Wieder 2014
+k2   <- 1        #half saturation of sorption             (mg)
 k3   <- 0.01     #half saturation of inorganic N uptake   (mg)
-h1   <- 0.003    #biomass turnover rate                  (1/time)    
-h2   <- 0.001    #C-specific desorption rate              (1/time)
-h3   <- 0.0002     #fraction of POM that potentially sorbs (1/time)
-h4   <- 0.2       #inorganic N loss rate                  (1/time)
-#h5   <- 0.0001    #exogenous losses of POM                (1/time)
-h5   <- 0.00005    #exogenous losses of POM                (1/time)
+h1   <- 0.001    #biomass turnover rate                   (1/time)
+h2   <- 0.00075  #C-specific desorption rate              (1/time)
+h3   <- 0.00001  #fraction of POM that potentially sorbs  (1/time)
+h4   <- 0.2      #inorganic N loss rate                   (1/time)
+h5   <- 0.0001   #exogenous losses of POM                 (1/time)
+
 #parameters: N cycling
-IN <- 50 #C:N ratio of inputs (constant). 20=C limitation, 50=N limitation
-CN <- 50 #C:N ratio of initial particulate organic matter (will change)
-MN <- 25 #C:N ratio of initial mineral-associated organic matter (will change)
-BN <-  7 #C:N ratio of the microbial biomass (constant)
+IN <- 60         #C:N ratio of inputs (constant). 20=C limitation, 50=N limitation
+CN <- 50         #C:N ratio of initial particulate organic matter (will change)
+MN <- 25         #C:N ratio of initial mineral-associated organic matter (will change)
+BN <-  7         #C:N ratio of the microbial biomass (constant)
 
 #initial pool sizes
 C <- 100      #C pool in POM            (mg / g)
@@ -48,7 +47,7 @@ N3 <- B/BN    #microbial biomass N			(mg / g)
 N4 <- 0.001	  #inorganic N pool size 		(mg / g)
 
 #number of days to step the dynamic simulation through time.
-t <- 100000
+t <- 200000
 
 #choose outputs you want to follow. 
 outputs <- c('C','M','B','R','N1','N2','N3','N4')
@@ -155,5 +154,7 @@ plot(out[,3]/out[,7], cex = 0.1, col='red'  , ylim = c(0,55))
 C;M;B;C+B+M
 #N limitation? 
 mineralization.immobilization < 0
-#biomass turnover rate
+#biomass turnover rate in days
 B/(h1*(B^1.5))
+#ug respiration per g C
+(R*1000)/(C/1000)

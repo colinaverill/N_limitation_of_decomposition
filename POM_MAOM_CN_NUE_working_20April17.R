@@ -53,10 +53,10 @@ t <- 400000
 #choose outputs you want to follow. 
 outputs <- c('C','M','B','R','N1','N2','N3','N4','CUE','NUE')
 out <- matrix(rep(0,t*length(outputs)),nrow=t,dimnames=list(NULL,outputs))
-N_addition <- c(rep(0,200000), rep(0.01,200000))
-C_addition <- c(rep(0,200000), rep(0.0,200000))
-timeline <- 1:t
-fert <- cbind(timeline, N_addition, C_addition)
+#N_addition <- c(rep(0,200000), rep(0.01,200000))
+#C_addition <- c(rep(0,200000), rep(0.0,200000))
+#timeline <- 1:t
+#fert <- cbind(timeline, N_addition, C_addition)
 
 
 for(i in 1:t){
@@ -113,18 +113,21 @@ for(i in 1:t){
   }
   
   #ODEs
-  dCdt  <- I + fert[i,3] + (DEATH.C - SORPTION.B.C) + DESORPTION.C - DECOMP.C - SORPTION.P.C - exo.loss.C
+  #dCdt  <- I + fert[i,3] + (DEATH.C - SORPTION.B.C) + DESORPTION.C - DECOMP.C - SORPTION.P.C - exo.loss.C
+  dCdt  <- I + (DEATH.C - SORPTION.B.C) + DESORPTION.C - DECOMP.C - SORPTION.P.C - exo.loss.C
   dMdt  <- SORPTION.C - DESORPTION.C
   dBdt  <- (CUE * DECOMP.C) - DEATH.C - overflow.R
   dN1dt <- (I/IN) + (DEATH.N - SORPTION.B.N) + DESORPTION.N - DECOMP.N - SORPTION.P.N - exo.loss.N
   dN2dt <- SORPTION.N - DESORPTION.N
   dN3dt <- DECOMP.N*NUE + immobilization - mineralization - DEATH.N
-  dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS + fert[i,2]
- CUE_emergent <- ((CUE*DECOMP.C)-overflow.R)/DECOMP.C
- NUE_emergent <- ((NUE*DECOMP.N)-mineralization)/DECOMP.N
+  #dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS + fert[i,2]
+  dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
 
-  #respiration
+
+  #respiration + trait values
   resp  <- (1-CUE)*DECOMP.C + overflow.R
+  CUE_emergent <- ((CUE*DECOMP.C)-overflow.R)/DECOMP.C
+  NUE_emergent <- ((NUE*DECOMP.N)-mineralization)/DECOMP.N
   
   #update pools
   C  <- C  + dCdt
