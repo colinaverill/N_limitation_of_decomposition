@@ -15,8 +15,13 @@ t <- 400000
 #Assume decreases in pH associated with N fertilization double microbial death rate
 fert.level <- 0.05 / 365
 fert.day   <- 300000      #which day to begin fertilization.
-pH <- c(rep(1,fert.day), rep(2,(t-fert.day)))
-pH <- as.matrix(cbind(t,pH))
+
+#model logistic decline in pH as N fertilization proceeds
+treatment_day <- 1:100000
+pH_fn <- 0.4353*(-log(treatment_day/10000))+3.991
+pH <- c(rep(8,fert.day), pH_fn)
+pH_effects <- as.matrix(cbind(t,pH))
+
 #create empty meta.list for storing multiple lists of matries
 meta.list <- list()
 
@@ -41,7 +46,8 @@ for(k in 1:length(v2.range)){
     
     for(i in 1:t){
       #C fluxes
-      DEATH.C      <- (h1*pH[i,2])*B^1.5
+      death_increase <- -0.1875*(pH_effects[i,2]-8)#assume 18.75% decline in growth for each unit increase in pH (Rousk et al. 2010; Fig. 1C)
+      DEATH.C      <- (h1*(1+death_increase))*B^1.5
       DECOMP.C     <- v1*B*C / (k1 + C)
       exo.loss.C   <- h5*C
       POM2MOM.C    <- h3*C
