@@ -1,7 +1,12 @@
 #fertilize with a 0.05mg inorganic N dose, equivalent to a 1 time application of 50 kg N / ha / yr
 #clear R environment, load packages
 rm(list=ls())
-#require(rootSolve)
+
+#specify model, parameter and output filepaths
+     model.path <- 'model.r'
+parameters.path <- 'parameters.r'
+    output.path <- 'experiment_output/N_pH_fert.experiment.rds'
+
 
 #Specify vector of input C:N values, and v2 (clay sorption) values
 cn.range <- c(30,60,80)
@@ -28,7 +33,7 @@ meta.list <- list()
 #create outermost loop for 3 levels of v2
 for(k in 1:length(v2.range)){
   #grab parameters and starting values
-  source('model_parameters/clay*CN_0-clay_parameters_ALT_051717_final.r')
+  source(parameters.path)
   
   #set v2 (clay sorption) value.
   v2 <- v2.range[k]
@@ -149,4 +154,4 @@ for(k in 1:length(v2.range)){
 
 #3 levels of input CN by 3 levels are clay are now stored in a nested list (meta.list).
 #save output. 
-saveRDS(meta.list,'N_pH_fert.experiment.rds')
+saveRDS(meta.list,output.path)
