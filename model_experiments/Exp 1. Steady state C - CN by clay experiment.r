@@ -9,16 +9,23 @@ rm(list=ls())
 require(rootSolve)
 require(wesanderson)
 
+#specify model, parameter and output filepaths
+model.path      <- 'model.r'
+parameters.path <- 'parameters.r'
+no.clay.path    <- 'experiment_output/no_clay.CN_NUE_model.rds'
+lo.clay.path    <- 'experiment_output/lo_clay.CN_NUE_model.rds'
+hi.clay.path    <- 'experiment_output/hi_clay.CN_NUE_model.rds'
+  
 #grab the model as a function stored in another R script. 
-source('model_functions/CN_NUE_model.r')
+source(model.path)
 
 #grab zero clay parameters and starting values
-source('model_parameters/clay*CN_0-clay_parameters_ALT.r')
+source(parameters.path)
 
 #Specify vector of input C:N values.
-cn.range <- seq(20,80, by = 1)
+cn.range <- seq(30,80, by = 1)
 #Specify vector of clay values.
-v2.range <- c(0,1,2)
+v2.range <- c(0,0.5,2.5)
 
 #create an empty list for storing output of each level of clay.
 out.list <- list()
@@ -51,6 +58,6 @@ for(j in 1:length(v2.range)){
 }
 
 #Save outputs of each level of clay as a separate data frame.
-saveRDS(out.list[[1]],'experiment_output/no_clay.CN_NUE_model.rds')
-saveRDS(out.list[[2]],'experiment_output/lo_clay.CN_NUE_model.rds')
-saveRDS(out.list[[3]],'experiment_output/hi_clay.CN_NUE_model.rds')
+saveRDS(out.list[[1]], no.clay.path)
+saveRDS(out.list[[2]], lo.clay.path)
+saveRDS(out.list[[3]], hi.clay.path)

@@ -1,11 +1,15 @@
 #fertilize with a 0.05mg inorganic N dose, equivalent to a 1 time application of 50 kg N / ha / yr
 #clear R environment, load packages
 rm(list=ls())
-#require(rootSolve)
+
+#specify model, parameter, and output paths
+     model.path <- 'model.r'
+parameters.path <- 'parameters.r'
+    output.path <- 'experiment_output/N_fert.experiment.rds'
 
 #Specify vector of input C:N values, and v2 (clay sorption) values
 cn.range <- c(30,60,80)
-v2.range <- c(0,1.25,2.5)
+v2.range <- c(0,0.5,2.5)
 
 #number of days to step the dynamic simulation through time.
 t <- 400000
@@ -142,5 +146,4 @@ for(k in 1:length(v2.range)){
 
 #3 levels of input CN by 3 levels are clay are now stored in a nested list (meta.list).
 #save output. 
-saveRDS(meta.list,'experiment_output/N_fert.experiment.rds')
-
+saveRDS(meta.list, output.path)

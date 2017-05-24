@@ -10,34 +10,42 @@ no.clay <- readRDS('experiment_output/no_clay.CN_NUE_model.rds')
 lo.clay <- readRDS('experiment_output/lo_clay.CN_NUE_model.rds')
 hi.clay <- readRDS('experiment_output/hi_clay.CN_NUE_model.rds')
 
+png(filename='figures/Experiment 1. steady state CN by clay.png',width=8,height=3.5,units='in',res=300)
 
 par(mfrow=c(1,3))
 limy <- c(0,110)
 #no clay panel
 cols <- wes_palette("Zissou", 5)
-plot(tot ~ CN, data = no.clay, ylim = limy, cex = 0, ylab = 'mg C per g soil')
-lines(smooth.spline(no.clay$tot~no.clay$CN), lwd=2)
+plot(tot ~ CN, data = no.clay, ylim = limy, cex = 0, ylab = NA, xlab = 'input C:N')
+lines(smooth.spline(no.clay$tot~no.clay$CN), lwd=3)
 lines(smooth.spline(no.clay$C  ~no.clay$CN), lwd=2, col=cols[1])
 lines(smooth.spline(no.clay$M  ~no.clay$CN), lwd=2, col=cols[3])
 lines(smooth.spline(no.clay$B  ~no.clay$CN), lwd=2, col=cols[5])
 mtext('no clay', line = 0.2)
+mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
+mtext('a.', side =3, adj = 0.025, line = -1.25)
 
 #legend
-legend(20,110,c('total C','POM','MAOM','microbial'), lwd=2, col=c('black',cols[1],cols[3],cols[5]), bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.2, seg.len=1)
-
+legend(30,100,c('total C','POM','MAOM','microbial'), lwd=c(3,2,2,2), col=c('black',cols[1],cols[3],cols[5]), bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.2, seg.len=1)
 
 #lo clay panel 
-plot(tot ~ CN, data = lo.clay, ylim = limy, cex = 0, ylab = 'mg C per g soil')
-lines(smooth.spline(lo.clay$tot~lo.clay$CN), lwd=2)
+plot(tot ~ CN, data = lo.clay, ylim = limy, cex = 0, ylab = NA, xlab = 'input C:N')
+lines(smooth.spline(lo.clay$tot~lo.clay$CN), lwd=3)
 lines(smooth.spline(lo.clay$C  ~lo.clay$CN), lwd=2, col=cols[1])
 lines(smooth.spline(lo.clay$M  ~lo.clay$CN), lwd=2, col=cols[3])
 lines(smooth.spline(lo.clay$B  ~lo.clay$CN), lwd=2, col=cols[5])
 mtext('low clay', line = 0.2)
+mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
+mtext('b.', side =3, adj = 0.025, line = -1.25)
 
 #hi clay panel 
-plot(tot ~ CN, data = hi.clay, ylim = limy, cex = 0, ylab = 'mg C per g soil')
-lines(smooth.spline(hi.clay$tot~hi.clay$CN), lwd=2)
+plot(tot ~ CN, data = hi.clay, ylim = limy, cex = 0, ylab = NA, xlab = 'input C:N')
+lines(smooth.spline(hi.clay$tot~hi.clay$CN), lwd=3)
 lines(smooth.spline(hi.clay$C  ~hi.clay$CN), lwd=2, col=cols[1])
 lines(smooth.spline(hi.clay$M  ~hi.clay$CN), lwd=2, col=cols[3])
 lines(smooth.spline(hi.clay$B  ~hi.clay$CN), lwd=2, col=cols[5])
 mtext('high clay', line = 0.2)
+mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
+mtext('c.', side =3, adj = 0.025, line = -1.25)
+
+dev.off()
