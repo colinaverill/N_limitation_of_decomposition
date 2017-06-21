@@ -29,7 +29,7 @@ limy <- c(0,260)
 o.lab = 1.5
 
 #save dimensions, destination
-png(filename='figures/Experiment 2. C-fertilization figure.png',width=8.1,height=7.2,units='in',res=300)
+png(filename='figures/Experiment 3. C-fertilization figure.png',width=8.1,height=7.2,units='in',res=300)
 
 
 #setup panels
@@ -46,7 +46,7 @@ lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
 Axis(side=2)
 mtext('C:N = 30'    , side = 3, line = .5, cex = o.lab)
-mtext('C-limitation', side = 3, line = 3,  cex = 1.2)
+mtext('C limitation', side = 3, line = 3,  cex = 1.2)
 mtext('a.', side =3, adj = 0.975, line = -1.25)
 legend(30,250,c('total C','POM','MAOM','microbial','begin +C'), 
        lwd=c(2,2,2,2,1), col=c('black',cols[1],cols[3],cols[5],'black'), lty=c(1,1,1,1,3), 
@@ -62,7 +62,7 @@ lines(smooth.spline(dd$M   ~ dd$year), lwd=2, col=cols[3])
 lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
 mtext('C:N = 60', side = 3, line = .5,         cex = o.lab)
-mtext('mild N-limitation', side = 3, line = 3, cex = 1.2)
+mtext('mild N limitation', side = 3, line = 3, cex = 1.2)
 
 mtext('b.', side =3, adj = 0.975, line = -1.25)
 
@@ -75,8 +75,8 @@ lines(smooth.spline(dd$M   ~ dd$year), lwd=2, col=cols[3])
 lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
 mtext('C:N = 80', side = 3, line = .5,          cex = o.lab)
-mtext('severe N-limitation', side = 3, line = 3, cex = 1.2)
-mtext('zero clay',side = 4, line =  1, las = 0, cex = o.lab)
+mtext('severe N limitation', side = 3, line = 3, cex = 1.2)
+mtext('no sorption',side = 4, line =  1, las = 0, cex = o.lab)
 mtext('c.', side =3, adj = 0.975, line = -1.25)
 
 #v1.30 panel
@@ -108,7 +108,7 @@ lines(smooth.spline(dd$C   ~ dd$year), lwd=2, col=cols[1])
 lines(smooth.spline(dd$M   ~ dd$year), lwd=2, col=cols[3])
 lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
-mtext('low clay',side = 4, line = 1, las = 0, cex = o.lab)
+mtext('low sorption',side = 4, line = 1, las = 0, cex = o.lab)
 mtext('f.', side =3, adj = 0.975, line = -1.25)
 
 #v2.30 panel
@@ -144,7 +144,7 @@ lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
 Axis(side=1, labels=T)
 mtext('i.', side =3, adj = 0.975, line = -1.25)
-mtext('high clay',side = 4, line = 1, las = 0, cex = o.lab)
+mtext('high sorption',side = 4, line = 1, las = 0, cex = o.lab)
 
 #outer labels
 mtext('time (years)'                         , side=1, out=T, cex=o.lab, line = 3)
