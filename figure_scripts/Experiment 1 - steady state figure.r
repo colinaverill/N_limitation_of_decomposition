@@ -23,10 +23,16 @@ lines(smooth.spline(no.clay$M  ~no.clay$CN), lwd=2, col=cols[3])
 lines(smooth.spline(no.clay$B  ~no.clay$CN), lwd=2, col=cols[5])
 mtext('no clay', line = 0.2)
 mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
+<<<<<<< HEAD:figure_scripts/Experiment 1 - steady state figure.r
 mtext('a.', side =3, adj = 0.025, line = -1.25)
 
 #legend
 legend(30,100,c('total C','POM','MAOM','microbial'), lwd=c(3,2,2,2), col=c('black',cols[1],cols[3],cols[5]), bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.2, seg.len=1)
+=======
+
+#legend
+legend(30,110,c('total C','POM','MAOM','microbial'), lwd=c(3,2,2,2), col=c('black',cols[1],cols[3],cols[5]), bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.2, seg.len=1)
+>>>>>>> add0d81951700bef1915ad9a65334096f7fde7c6:figure_scripts/Experiment 1 - steady state figure.r
 
 #lo clay panel 
 plot(tot ~ CN, data = lo.clay, ylim = limy, cex = 0, ylab = NA, xlab = 'input C:N')
@@ -36,7 +42,10 @@ lines(smooth.spline(lo.clay$M  ~lo.clay$CN), lwd=2, col=cols[3])
 lines(smooth.spline(lo.clay$B  ~lo.clay$CN), lwd=2, col=cols[5])
 mtext('low clay', line = 0.2)
 mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
+<<<<<<< HEAD:figure_scripts/Experiment 1 - steady state figure.r
 mtext('b.', side =3, adj = 0.025, line = -1.25)
+=======
+>>>>>>> add0d81951700bef1915ad9a65334096f7fde7c6:figure_scripts/Experiment 1 - steady state figure.r
 
 #hi clay panel 
 plot(tot ~ CN, data = hi.clay, ylim = limy, cex = 0, ylab = NA, xlab = 'input C:N')
@@ -46,6 +55,9 @@ lines(smooth.spline(hi.clay$M  ~hi.clay$CN), lwd=2, col=cols[3])
 lines(smooth.spline(hi.clay$B  ~hi.clay$CN), lwd=2, col=cols[5])
 mtext('high clay', line = 0.2)
 mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
+<<<<<<< HEAD:figure_scripts/Experiment 1 - steady state figure.r
 mtext('c.', side =3, adj = 0.025, line = -1.25)
+=======
+>>>>>>> add0d81951700bef1915ad9a65334096f7fde7c6:figure_scripts/Experiment 1 - steady state figure.r
 
 dev.off()
