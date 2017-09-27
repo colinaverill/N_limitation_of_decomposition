@@ -111,3 +111,7 @@ mtext('f.', side =3, adj = 0.975, line = -1.25)
 mtext('time (years)'                         , side=1, out=T, cex=o.lab, line = 3)
 mtext(expression(paste('mg C (g soil)'^'-1')), side=2, out=T, cex=o.lab, line = 3, las = 0)
 
+#end plot
+
+dev.off()
+
