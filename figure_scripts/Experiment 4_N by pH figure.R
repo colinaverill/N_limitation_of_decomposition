@@ -4,7 +4,7 @@ library(wesanderson)
 #load experiment data.
 d <- readRDS('experiment_output/N_pH_feedbacks.experiment.rds')
 
-#we have 2 levels of soil buffering capacity: high and low
+#we have 2 levels of soil clay content
 #we have 3 levels of CN  :30,60,80
 
 pl1.30 <- d[[1]][[1]]
@@ -71,7 +71,7 @@ lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
 mtext('C:N = 80', side = 3, line = .5,          cex = o.lab)
 mtext('severe N limitation', side = 3, line = 3, cex = 1.2)
-mtext('High pH buffering',side = 4, line =  1, las = 0, cex = 1.3)
+mtext('low sorption',side = 4, line =  1, las = 0, cex = 1.3)
 mtext('c.', side =3, adj = 0.975, line = -1.25)
 
 
@@ -103,7 +103,7 @@ lines(smooth.spline(dd$C   ~ dd$year), lwd=2, col=cols[1])
 lines(smooth.spline(dd$M   ~ dd$year), lwd=2, col=cols[3])
 lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
-mtext('Low pH buffering',side = 4, line = 1, las = 0, cex = 1.3)
+mtext('high sorption',side = 4, line = 1, las = 0, cex = 1.3)
 mtext('f.', side =3, adj = 0.975, line = -1.25)
 
 
