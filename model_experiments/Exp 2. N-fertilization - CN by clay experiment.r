@@ -9,7 +9,7 @@ parameters.path <- 'parameters.r'
 
 #Specify vector of input C:N values, and v2 (clay sorption) values
 cn.range <- c(30,60,80)
-v2.range <- c(0,0.5,2.5)
+v2.range <- c(0.5,2.5)
 
 #number of days to step the dynamic simulation through time.
 t <- 400000
@@ -144,6 +144,6 @@ for(k in 1:length(v2.range)){
   
 } #end v.range loop.
 
-#3 levels of input CN by 3 levels are clay are now stored in a nested list (meta.list).
+#3 levels of input CN by 2 levels are clay are now stored in a nested list (meta.list).
 #save output. 
 saveRDS(meta.list, output.path)
