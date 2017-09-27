@@ -15,9 +15,9 @@ parameters.path <- 'parameters_pH.r'
 
 output.path <- 'experiment_output/N_pH_feedbacks.experiment.rds'
 
-#Specify vector of input C:N values, and pl (proton loss, or soil buffering) values
+#Specify vector of input C:N values, and v2 (clay sorption) values
 cn.range <- c(30,60,80)
-pl.range <- c(5e-5,5e-30)
+v2.range <- c(0.5,2.5)
 
 #number of days to step the dynamic simulation through time.
 t <- 400000
@@ -31,12 +31,10 @@ fert.day   <- 300000      #which day to begin fertilization.
 #create empty meta.list for storing multiple lists of matries
 meta.list <- list()
 
-#create outermost loop for 3 levels of proton loss
-for(k in 1:length(pl.range)){
+#create outermost loop for clay sorption
+for(k in 1:length(v2.range)){
   #grab parameters and starting values
   source('parameters_pH.r')
-  #set proton loss rate (simulating soil buffering capacity)
-  proton_loss <- pl.range[k]
   #create list for saving outputs across 3 levels of CN.
   out.list <- list()
   
