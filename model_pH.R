@@ -57,7 +57,6 @@ CN_NUE_pH_model <- function(t,y,pars){
       dMdt  <- SORPTION.C - DESORPTION.C
       dN1dt <- (I/IN) + (DEATH.N - SORPTION.B.N) + DESORPTION.N - DECOMP.N - SORPTION.P.N - exo.loss.N
       dN2dt <- SORPTION.N - DESORPTION.N
-      dN3dt <- DECOMP.N*NUE + immobilization - mineralization - DEATH.N
       dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
       
       #respiration
@@ -77,12 +76,12 @@ CN_NUE_pH_model <- function(t,y,pars){
       pH_offset <- 7 - pH
       growth_decrease <- pH_offset * 0.18
       dBdt  <- (1-growth_decrease)*(CUE * DECOMP.C) - DEATH.C - overflow.R
-      
+      dN3dt <- (1-growth_decrease)*(NUE * DECOMP.N) + immobilization - mineralization - DEATH.N
       #update pools
-      C  <- C  + dCdt
+      C  <- C  + dCdt + growth_decrease*(CUE*DECOMP.C)
       M  <- M  + dMdt
       B  <- B  + dBdt
-      N1 <- N1 + dN1dt
+      N1 <- N1 + dN1dt + growth_decrease*(NUE*DECOMP.N)
       N2 <- N2 + dN2dt
       N3 <- N3 + dN3dt
       N4 <- N4 + dN4dt
