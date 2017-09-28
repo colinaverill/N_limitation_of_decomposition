@@ -103,10 +103,8 @@ for(k in 1:length(v2.range)){
       #ODEs
       dCdt  <- I + (DEATH.C - SORPTION.B.C) + DESORPTION.C - DECOMP.C - SORPTION.P.C - exo.loss.C
       dMdt  <- SORPTION.C - DESORPTION.C
-      dBdt  <- (CUE * DECOMP.C) - DEATH.C - overflow.R
       dN1dt <- (I/IN) + (DEATH.N - SORPTION.B.N) + DESORPTION.N - DECOMP.N - SORPTION.P.N - exo.loss.N
       dN2dt <- SORPTION.N - DESORPTION.N
-      dN3dt <- DECOMP.N*NUE + immobilization - mineralization - DEATH.N
       dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
       
       #Drop in N fertilization at t=80000 (index 4000 w/ thinning at 20)
@@ -131,11 +129,11 @@ for(k in 1:length(v2.range)){
       pH_offset <- 7 - pH
       growth_decrease <- pH_offset * 0.18
       dBdt  <- (1-growth_decrease)*(CUE * DECOMP.C) - DEATH.C - overflow.R
-      
+      dN3dt <- (1-growth_decrease)*(NUE * DECOMP.N) + immobilization - mineralization - DEATH.N
 
       #update pools
-      C  <- C  + dCdt
-      M  <- M  + dMdt
+      C  <- C  + dCdt + growth_decrease*(CUE * DECOMP.C)
+      M  <- M  + dMdt + growth_decrease*(NUE * DECOMP.N)
       B  <- B  + dBdt
       N1 <- N1 + dN1dt
       N2 <- N2 + dN2dt
