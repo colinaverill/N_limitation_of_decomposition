@@ -1,18 +1,10 @@
 #fertilize with a 0.05mg inorganic N dose, equivalent to a 1 time application of 50 kg N / ha / yr
-
 #clear R environment, load packages
-
 rm(list=ls())
 
-
-
-
 #specify model, parameter, and output paths
-
-model.path <- 'model_pH.r'
-
-parameters.path <- 'parameters_pH.r'
-
+#model.path <- 'model_pH.R'
+parameters.path <- 'parameters_pH.R'
 output.path <- 'experiment_output/N_pH_feedbacks.experiment.rds'
 
 #Specify vector of input C:N values, and v2 (clay sorption) values
@@ -34,7 +26,8 @@ meta.list <- list()
 #create outermost loop for clay sorption
 for(k in 1:length(v2.range)){
   #grab parameters and starting values
-  source('parameters_pH.r')
+  source(parameters.path)
+  
   #create list for saving outputs across 3 levels of CN.
   out.list <- list()
   
@@ -117,13 +110,12 @@ for(k in 1:length(v2.range)){
       
       #pH
       pH_mod <- pH/pH_opt 
-	  N_turnover <- dN4dt
-	  Nitr <- pH_mod*N_turnover #nitrification is proportional to pH (further from optimum, the slower it goes) and rate of N turnover sensu Parton et al 1996
-	 proton_change <- Nitr*1e-3
-	 protons <- protons + proton_change - proton_loss
-	 if (protons < 1e-07) {protons = 1e-07} else {protons = protons} #pH cannot rise above 7
-	 pH <- -log10(protons)
-	 if (pH < 4) {pH = 4} else {pH=pH} #pH cannot drop beneath a certain threshold due to soil buffering capacity
+	    Nitr <- pH_mod*dN4dt #nitrification is proportional to pH (further from optimum, the slower it goes) and rate of N turnover sensu Parton et al 1996
+	    proton_change <- Nitr*1e-3
+	    protons <- protons + proton_change - proton_loss
+	    if (protons < 1e-07) {protons = 1e-07} else {protons = protons} #pH cannot rise above 7
+	    pH <- -log10(protons)
+	    if (pH < 4) {pH = 4} else {pH=pH} #pH cannot drop beneath a certain threshold due to soil buffering capacity
       
       #pH effects on biomass - growth is reduced by 18% for each unit change in pH sensu Rousk et al. 2010
       pH_offset <- 7 - pH

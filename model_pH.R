@@ -52,40 +52,40 @@ CN_NUE_pH_model <- function(t,y,pars){
         overflow.R <- DECOMP.C*CUE - (DECOMP.N*NUE + immobilization)*BN
       }
       
+      #pH
+      pH_mod <- pH/pH_opt 
+	    N_turnover <- dN4dt
+	    Nitr <- pH_mod*N_turnover #nitrification is proportional to pH (further from optimum, the slower it goes) and rate of N turnover sensu Parton et al 1996
+	    proton_change <- Nitr*1e-3
+	    protons <- protons + proton_change - proton_loss
+	    if (protons < 1e-08) {protons = 1e-08} else {protons = protons} #pH cannot rise above a certain threshold due to soil buffering capacity
+	    pH <- -log10(protons)
+	    if (pH < 4) {pH = 4} else {pH=pH} #pH cannot drop beneath a certain threshold due to soil buffering capacity
+      
+      #pH effects on biomass - growth is reduced by 18% for each unit change in pH sensu Rousk et al. 2010
+      pH_offset <- 7 - pH
+      growth_decrease <- pH_offset * 0.18
+      
       #ODEs
-      dCdt  <- I + (DEATH.C - SORPTION.B.C) + DESORPTION.C - DECOMP.C - SORPTION.P.C - exo.loss.C
+      dBdt  <- (1-growth_decrease)*(CUE * DECOMP.C) - DEATH.C - overflow.R
+      dCdt  <- I + (DEATH.C - SORPTION.B.C) + DESORPTION.C + growth_decrease*(CUE*DECOMP.C) - DECOMP.C - SORPTION.P.C - exo.loss.C
       dMdt  <- SORPTION.C - DESORPTION.C
-      dN1dt <- (I/IN) + (DEATH.N - SORPTION.B.N) + DESORPTION.N - DECOMP.N - SORPTION.P.N - exo.loss.N
+      dN1dt <- (I/IN) + (DEATH.N - SORPTION.B.N) + DESORPTION.N + growth_decrease*(NUE*DECOMP.N) - DECOMP.N - SORPTION.P.N - exo.loss.N
       dN2dt <- SORPTION.N - DESORPTION.N
+      dN3dt <- (1-growth_decrease)*(NUE * DECOMP.N) + immobilization - mineralization - DEATH.N
       dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
       
       #respiration
       resp  <- (1-CUE)*DECOMP.C + overflow.R
       
-      #pH
-      pH_mod <- pH/pH_opt 
-	  N_turnover <- dN4dt
-	  Nitr <- pH_mod*N_turnover #nitrification is proportional to pH (further from optimum, the slower it goes) and rate of N turnover sensu Parton et al 1996
-	 proton_change <- Nitr*1e-3
-	 protons <- protons + proton_change - proton_loss
-	 if (protons < 1e-08) {protons = 1e-08} else {protons = protons} #pH cannot rise above a certain threshold due to soil buffering capacity
-	 pH <- -log10(protons)
-	 if (pH < 4) {pH = 4} else {pH=pH} #pH cannot drop beneath a certain threshold due to soil buffering capacity
-      
-      #pH effects on biomass - growth is reduced by 18% for each unit change in pH sensu Rousk et al. 2010
-      pH_offset <- 7 - pH
-      growth_decrease <- pH_offset * 0.18
-      dBdt  <- (1-growth_decrease)*(CUE * DECOMP.C) - DEATH.C - overflow.R
-      dN3dt <- (1-growth_decrease)*(NUE * DECOMP.N) + immobilization - mineralization - DEATH.N
       #update pools
-      C  <- C  + dCdt + growth_decrease*(CUE*DECOMP.C)
+      C  <- C  + dCdt 
       M  <- M  + dMdt
       B  <- B  + dBdt
-      N1 <- N1 + dN1dt + growth_decrease*(NUE*DECOMP.N)
+      N1 <- N1 + dN1dt 
       N2 <- N2 + dN2dt
       N3 <- N3 + dN3dt
       N4 <- N4 + dN4dt
-      R  <- resp
       pH <- -log10(protons)
       
       #solver

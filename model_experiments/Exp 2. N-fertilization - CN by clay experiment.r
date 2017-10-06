@@ -26,7 +26,8 @@ meta.list <- list()
 #create outermost loop for 3 levels of v2
 for(k in 1:length(v2.range)){
   #grab parameters and starting values
-  source('model_parameters/clay*CN_0-clay_parameters_ALT.r')
+  #source('model_parameters/clay*CN_0-clay_parameters_ALT.r')
+  source(parameters.path)
   
   #set v2 (clay sorption) value.
   v2 <- v2.range[k]

@@ -4,10 +4,10 @@ rm(list=ls())
 library(wesanderson)
 
 #load experiment data.
-d <- readRDS('experiment_output/N_pH_feedbacks.experiment.rds')
+d <- readRDS('experiment_output/AV_N_pH_feedbacks.experiment.rds')
 
 #set output path for saving figure
-output.path <- "figures/Experiment 4. N by pH figure.png"
+output.path <- "figures/AV_Experiment 4. N by pH figure.png"
 
 #we have 2 levels of soil clay content
 #we have 3 levels of CN: 30, 60, 80
@@ -24,7 +24,7 @@ pl2.80 <- d[[2]][[3]]
 cols <- wes_palette("Zissou", 5)
 
 #set ylimits
-limy <- c(0,260)
+limy <- c(0,160)
 
 #outer label cex value
 o.lab = 1.5
@@ -48,7 +48,7 @@ Axis(side=2)
 mtext('C:N = 30'    , side = 3, line = .5, cex = o.lab)
 mtext('C limitation', side = 3, line = 3,  cex = 1.2)
 mtext('a.', side =3, adj = 0.975, line = -1.25)
-legend(30,250,c('total C','POM','MAOM','microbial','begin +N'), 
+legend(30,150,c('total C','POM','MAOM','microbial','begin +N'), 
        lwd=c(2,2,2,2,1), col=c('black',cols[1],cols[3],cols[5],'black'), lty=c(1,1,1,1,3), 
        bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.5, seg.len=1.5)
 
