@@ -5,6 +5,7 @@ library(wesanderson)
 
 #load experiment data.
 d <- readRDS('experiment_output/N_fert.experiment.rds')
+output.path <- 'figures/Experiment 2. N-fertilization figure.png'
 
 #we have 2 levels of clay: 1, 2
 #we have 3 levels of CN: 30, 60, 80
@@ -19,13 +20,13 @@ v2.80 <- d[[2]][[3]]
 cols <- wes_palette("Zissou", 5)
 
 #set ylimits
-limy <- c(0,120)
+limy <- c(0,150)
 
 #outer label cex value
 o.lab = 1.5
 
 #save dimensions, destination
-png(filename='figures/Experiment 2. N-fertilization figure.png',width=8.1,height=7.2,units='in',res=300)
+png(filename=output.path,width=8.1,height=7.2,units='in',res=300)
 
 #set up panels
 par(mfrow=c(2,3), oma=c(5,8,5,5), mar=c(0,0,0,0),las=1)

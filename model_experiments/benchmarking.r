@@ -1,10 +1,8 @@
+#This script is used to check model benchmarks at end of N-fertilization experiment.
 rm(list=ls())
 
 #specify model, parameter, and output paths
-parameters.path <- 'parameters.r'
-parameters.path <- 'parameters_pH.R'
-output.path <- 'experiment_output/averill.test_N_pH_feedbacks.experiment.rds'
-
+parameters.path <- 'av_parameters.r'
 
 #number of days to step the dynamic simulation through time.
 source(parameters.path)
@@ -19,18 +17,7 @@ IN <- 80
 #v2- sorption - is at 0.5 and 2.5 for low and high, respectively.
 v2 <- 2.5
 #whether or not we are in pH mode. If pH mode set to F, pH constant at 5.5.
-pH_mode <- T
-
-#been playing with per capita decay rate and biomass turnover rate. 
-v1 <- v1*2.3#.3 #working sort of well at 1.1
-h1 <- h1*2#.9
-h5 <- h5*1.2
-
-nitr.acid <- 1e-3 #these values keep pH shifting in a reasonable way.
-acid.loss <- 1.5e-2
-ph.mod <- 0.2     #this reduces biomass growth by 20% per unit pH decline relative to 7
-
-
+pH_mode <- F
 
 #choose outputs you want to follow. 
 outputs <- c('C','M','B','R','N1','N2','N3','N4','pH','day')
@@ -159,4 +146,4 @@ cat('BENCHMARKS',
     '\ntotal C is',(C+B+M),'mg per g soil, (target 10-200mg)',
     '\nmicrobial biomass C is',100*B/(C+M+B),'% of total C (target 0.5-10%)',
     '\ninorganic N is ',1000*N4,'ug per g soil (target 0-10ug)',
-    '\nrespiration is',(R*1000) / ((C+M+B)/1000),'ug C per g soil C per day (target 100-1500ug)')
+    '\nrespiration is',(R*1000) / ((C+M+B)/1000),'ug C per g soil C per day (target 70-1500ug)')

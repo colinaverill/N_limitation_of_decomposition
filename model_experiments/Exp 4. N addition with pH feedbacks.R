@@ -1,10 +1,10 @@
 #fertilize with a 0.05mg inorganic N dose, equivalent to a 1 time application of 50 kg N / ha / yr
 #clear R environment, load packages
+#Be sure to specify pH mode on line 32!
 rm(list=ls())
 
-#specify model, parameter, and output paths
-#model.path <- 'model_pH.R'
-parameters.path <- 'parameters_pH.R'
+#specify arameter, and output paths
+parameters.path <- 'parameters.r'
 output.path <- 'experiment_output/N_pH_feedbacks.experiment.rds'
 
 #Specify vector of input C:N values, and v2 (clay sorption) values
@@ -18,20 +18,25 @@ t <- 400000
 #This assumes an effect soil depth of 10cm, and a bulk density of 1 g / cm3.
 fert.level <- 0.05 / 365
 fert.day   <- 300000      #which day to begin fertilization.
+fert = 0 #fertilization level starts at zero.
 
 
-#create empty meta.list for storing multiple lists of matries
+
+#create empty meta.list for storing multiple lists of matrices
 meta.list <- list()
 
-#create outermost loop for clay sorption
+#create outermost loop for 3 levels of v2
 for(k in 1:length(v2.range)){
   #grab parameters and starting values
   source(parameters.path)
+  pH_mode = T
   
+  #set v2 (clay sorption) value.
+  v2 <- v2.range[k]
   #create list for saving outputs across 3 levels of CN.
   out.list <- list()
   
-    for(j in 1:length(cn.range)){
+  for(j in 1:length(cn.range)){
     #choose outputs you want to follow. 
     outputs <- c('C','M','B','R','N1','N2','N3','N4','pH','day')
     out <- matrix(rep(0,t*length(outputs)),nrow=t,dimnames=list(NULL,outputs))
@@ -39,11 +44,14 @@ for(k in 1:length(v2.range)){
     #set current loop input CN value
     IN <- cn.range[j]
     day <- 0
+    #make sure initial conditions are right.
+    C=100;M=20;B=C*0.1;N1=C/50;N2=M/25;N3=B/7;N4=0.0001;pH=7;protons=10^-pH
+    fert=0
     
     for(i in 1:t){
       #C fluxes
       DEATH.C      <- h1*B^1.5
-      DECOMP.C     <- v1*B*C / (k1 + C)
+      DECOMP.C     <- v1*B*C / (k1 + C) * (1 - ((7-pH)*ph.mod)) #adding pH mod to decomp flux.
       exo.loss.C   <- h5*C
       POM2MOM.C    <- h3*C
       SORPTION.C   <- v2*(POM2MOM.C+DEATH.C) / (k2 + POM2MOM.C+DEATH.C)
@@ -60,6 +68,7 @@ for(k in 1:length(v2.range)){
       SORPTION.B.N <- (DEATH.N  /(POM2MOM.N+DEATH.N))*SORPTION.N
       SORPTION.P.N <- (POM2MOM.N/(POM2MOM.N+DEATH.N))*SORPTION.N
       DESORPTION.N <- DESORPTION.C/(M/N2)
+      
       
       #MINERALIZATION-IMMOBILIZATION.
       #N uptake minus demand. If in excess, positive. If limited, negative.
@@ -80,9 +89,14 @@ for(k in 1:length(v2.range)){
         }
       }
       
+      #Drop in N fertilization when day = fert.day
+      if(day > fert.day){
+        fert = fert.level
+      }
+      
       #leaching/plant uptake happens on post-mineralization/immobilization inorganic N pool.
       #Make sure to include inputs to N4 from imperfect NUE values
-      INORG.N.LOSS <- h4*(N4 + DECOMP.N*(1-NUE) + mineralization - immobilization)
+      INORG.N.LOSS <- h4*(N4 + DECOMP.N*(1-NUE) + fert + mineralization - immobilization)
       
       #OVERFLOW RESPIRATION
       #excess C uptake must go somewhere because mass balance.
@@ -93,46 +107,44 @@ for(k in 1:length(v2.range)){
         overflow.R <- DECOMP.C*CUE - (DECOMP.N*NUE + immobilization)*BN
       }
       
+      #pH sub-routine.
+      #acidification is linked to nitrification.
+      #nitrification is linear with respect to the sum of all inputs to the inorganic N pool.
+      #nitrification decreases as pH decreases.
+      nitrif <- (pH / pH_opt)*(DECOMP.N*(1-NUE) + mineralization + fert)
+      proton_gain <- nitrif * nitr.acid
+      proton_loss <- protons* acid.loss
+      #Soil Buffering - this never kicks in with our parameter set.
+      if (protons < 1e-07) {proton_loss = 0} else {proton_loss = proton_loss} #pH cannot rise above 7
+      if (protons > 1e-04) {proton_gain = 0} else {proton_gain = proton_gain} #pH cannot drop below 4
+      
       #ODEs
+      dBdt  <- (CUE * DECOMP.C) - DEATH.C - overflow.R
       dCdt  <- I + (DEATH.C - SORPTION.B.C) + DESORPTION.C - DECOMP.C - SORPTION.P.C - exo.loss.C
       dMdt  <- SORPTION.C - DESORPTION.C
       dN1dt <- (I/IN) + (DEATH.N - SORPTION.B.N) + DESORPTION.N - DECOMP.N - SORPTION.P.N - exo.loss.N
       dN2dt <- SORPTION.N - DESORPTION.N
-      dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
-      
-      #Drop in N fertilization at t=80000 (index 4000 w/ thinning at 20)
-      if(day > fert.day){
-        dN4dt = dN4dt + fert.level
-      }
+      dN3dt <- (NUE * DECOMP.N) + immobilization - mineralization - DEATH.N
+      dN4dt <- DECOMP.N*(1-NUE) + mineralization + fert - immobilization - INORG.N.LOSS
+      dPROTdt <- proton_gain - proton_loss
       
       #respiration
-      resp  <- (1-CUE)*DECOMP.C + overflow.R
+      R  <- (1-CUE)*DECOMP.C + overflow.R
       
-      #pH
-      pH_mod <- pH/pH_opt 
-	    Nitr <- pH_mod*dN4dt #nitrification is proportional to pH (further from optimum, the slower it goes) and rate of N turnover sensu Parton et al 1996
-	    proton_change <- Nitr*1e-3
-	    protons <- protons + proton_change - proton_loss
-	    if (protons < 1e-07) {protons = 1e-07} else {protons = protons} #pH cannot rise above 7
-	    pH <- -log10(protons)
-	    if (pH < 4) {pH = 4} else {pH=pH} #pH cannot drop beneath a certain threshold due to soil buffering capacity
-      
-      #pH effects on biomass - growth is reduced by 18% for each unit change in pH sensu Rousk et al. 2010
-      pH_offset <- 7 - pH
-      growth_decrease <- pH_offset * 0.18
-      dBdt  <- (1-growth_decrease)*(CUE * DECOMP.C) - DEATH.C - overflow.R
-      dN3dt <- (1-growth_decrease)*(NUE * DECOMP.N) + immobilization - mineralization - DEATH.N
-
       #update pools
-      C  <- C  + dCdt + growth_decrease*(CUE * DECOMP.C)
-      M  <- M  + dMdt + growth_decrease*(NUE * DECOMP.N)
+      C  <- C  + dCdt
+      M  <- M  + dMdt
       B  <- B  + dBdt
       N1 <- N1 + dN1dt
       N2 <- N2 + dN2dt
       N3 <- N3 + dN3dt
       N4 <- N4 + dN4dt
-      R  <- resp
       day <- day + 1
+      protons <- protons + dPROTdt
+      
+      #pH mode toggles whether or not pH is constant (5.5), or emergent from proton pool.
+      if(pH_mode == T){pH <- -log10(protons)}
+      if(pH_mode == F){pH = 5.5}
       
       #save outputs
       out[i,] <- c(C,M,B,R,N1,N2,N3,N4,pH,day)
@@ -145,16 +157,16 @@ for(k in 1:length(v2.range)){
     out <- data.frame(out)
     out$tot <- out$C + out$M + out$B         #calculate total C pool
     out$year <- (out$day - min(out$day))/365 #calcualte time in years, setting first day to zero. 
-    #save each level of CN within a soil buffering level as a matrix within a list. 
+    #save each level of CN within a clay level as a matrix within a list. 
     out.list[[j]] <- out
     
   } #end CN.range loop.
   
-  #Name each list of C:N ratios within a level of soil buffering
+  #Name each list of C:N ratios within a level of clay, using that clay level as an indicator.
   meta.list[[k]] <- out.list
   
 } #end v.range loop.
 
-#3 levels of input CN by 2 levels of soil buffering capacity are now stored in a nested list (meta.list).
+#3 levels of input CN by 2 levels are clay are now stored in a nested list (meta.list).
 #save output. 
 saveRDS(meta.list, output.path)

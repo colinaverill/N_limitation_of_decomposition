@@ -10,10 +10,14 @@ no.clay <- readRDS('experiment_output/no_clay.CN_NUE_model.rds')
 lo.clay <- readRDS('experiment_output/lo_clay.CN_NUE_model.rds')
 hi.clay <- readRDS('experiment_output/hi_clay.CN_NUE_model.rds')
 
-png(filename='figures/Experiment 1. steady state CN by clay.png',width=9,height=3.5,units='in',res=300)
+#set figure output path
+output.path <- 'figures/Experiment 1. steady state CN by clay.png'
+
+#begin figure.
+png(filename=output.path,width=9,height=3.5,units='in',res=300)
 
 par(mfrow=c(1,3), mai = c(0.5,0.3,0.3,0.3))
-limy <- c(0,110)
+limy <- c(0,150)
 #no clay panel
 cols <- wes_palette("Zissou", 5)
 plot(tot ~ CN, data = no.clay, ylim = limy, cex = 0, ylab = NA, xlab=NA)
@@ -29,7 +33,7 @@ mtext('input C:N', side = 1, line = 2.5, cex = 0.7)
 mtext('a.', side =3, adj = 0.025, line = -1.25)
 
 #legend
-legend(55,115,c('total C','POM','MAOM','microbial'), lwd=c(3,2,2,2), col=c('black',cols[1],cols[3],cols[5]), bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.2, seg.len=1)
+legend(30,145,c('total C','POM','MAOM','microbial'), lwd=c(3,2,2,2), col=c('black',cols[1],cols[3],cols[5]), bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.2, seg.len=1)
 
 #lo clay panel 
 plot(tot ~ CN, data = lo.clay, ylim = limy, cex = 0, ylab = NA, xlab = NA)
@@ -56,24 +60,24 @@ mtext('input C:N', side = 1, line = 2.5, cex = 0.7)
 mtext('c.', side =3, adj = 0.025, line = -1.25)
 
 #inset panel 1
-par(fig=c(.05, .125, .620, .770), new = T, mar = c(0,0,0,0))
-plot(no.clay$B ~ no.clay$CN, axes=T, ylim = c(0,10), cex = 0, xlab=NA, ylab=NA, xaxt='n', yaxt='n')
-lines(smooth.spline(no.clay$B  ~no.clay$CN), lwd=2, col=cols[5])
-mtext('biomass', side = 2, line = 0, cex = 0.5)
-mtext('input C:N', side = 1, line = 0, cex = 0.5)
+#par(fig=c(.05, .125, .620, .770), new = T, mar = c(0,0,0,0))
+#plot(no.clay$B ~ no.clay$CN, axes=T, ylim = c(0,10), cex = 0, xlab=NA, ylab=NA, xaxt='n', yaxt='n')
+#lines(smooth.spline(no.clay$B  ~no.clay$CN), lwd=2, col=cols[5])
+#mtext('biomass', side = 2, line = 0, cex = 0.5)
+#mtext('input C:N', side = 1, line = 0, cex = 0.5)
 
 #inset panel 2
-par(fig=c(.39, .465, .620, .770), new = T, mar = c(0,0,0,0))
-plot(lo.clay$B ~ lo.clay$CN, axes=T, ylim = c(0,10), cex = 0, xlab=NA, ylab=NA, xaxt='n', yaxt='n')
-lines(smooth.spline(lo.clay$B  ~lo.clay$CN), lwd=2, col=cols[5])
-mtext('biomass', side = 2, line = 0, cex = 0.5)
-mtext('input C:N', side = 1, line = 0, cex = 0.5)
+#par(fig=c(.39, .465, .620, .770), new = T, mar = c(0,0,0,0))
+#plot(lo.clay$B ~ lo.clay$CN, axes=T, ylim = c(0,10), cex = 0, xlab=NA, ylab=NA, xaxt='n', yaxt='n')
+#lines(smooth.spline(lo.clay$B  ~lo.clay$CN), lwd=2, col=cols[5])
+#mtext('biomass', side = 2, line = 0, cex = 0.5)
+#mtext('input C:N', side = 1, line = 0, cex = 0.5)
 
 #inset panel 3
-par(fig=c(.72, .795, .620, .770), new = T, mar = c(0,0,0,0))
-plot(hi.clay$B ~ hi.clay$CN, axes=T, ylim = c(0,10), cex = 0, xlab=NA, ylab=NA, xaxt='n', yaxt='n')
-lines(smooth.spline(hi.clay$B  ~hi.clay$CN), lwd=2, col=cols[5])
-mtext('biomass', side = 2, line = 0, cex = 0.5)
-mtext('input C:N', side = 1, line = 0, cex = 0.5)
+#par(fig=c(.72, .795, .620, .770), new = T, mar = c(0,0,0,0))
+#plot(hi.clay$B ~ hi.clay$CN, axes=T, ylim = c(0,10), cex = 0, xlab=NA, ylab=NA, xaxt='n', yaxt='n')
+#lines(smooth.spline(hi.clay$B  ~hi.clay$CN), lwd=2, col=cols[5])
+#mtext('biomass', side = 2, line = 0, cex = 0.5)
+#mtext('input C:N', side = 1, line = 0, cex = 0.5)
 
 dev.off()

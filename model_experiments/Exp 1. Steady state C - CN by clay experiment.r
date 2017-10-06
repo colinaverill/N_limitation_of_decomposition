@@ -15,12 +15,13 @@ parameters.path <- 'parameters.r'
 no.clay.path    <- 'experiment_output/no_clay.CN_NUE_model.rds'
 lo.clay.path    <- 'experiment_output/lo_clay.CN_NUE_model.rds'
 hi.clay.path    <- 'experiment_output/hi_clay.CN_NUE_model.rds'
-  
+
 #grab the model as a function stored in another R script. 
 source(model.path)
 
 #grab zero clay parameters and starting values
 source(parameters.path)
+pH=5.5 #running in constant pH mode.
 
 #Specify vector of input C:N values.
 cn.range <- seq(30,80, by = 1)
@@ -33,7 +34,11 @@ out.list <- list()
 #loop over each level of clay desired.
 for(j in 1:length(v2.range)){
   v2 <- v2.range[j]
-  out <- matrix(rep(0,length(cn.range)*7),nrow=length(cn.range),dimnames=list(NULL,c('C','M','B','N1','N2','N3','N4')))
+  #state variables to model.
+  state.vars <- c('C','M','B','N1','N2','N3','N4','protons')
+  out <- matrix(rep(0,length(cn.range)*length(state.vars)),
+                nrow=length(cn.range),
+                dimnames=list(NULL,state.vars))
   
   #begin C:N range loop for each level of clay.
   for(i in 1:length(cn.range)){
@@ -42,7 +47,9 @@ for(j in 1:length(v2.range)){
                  I=I,
                  v1=v1, v2=v2, 
                  k1=k1, k2=k2, k3=k3, 
-                 h1=h1, h2=h2, h3=h3, h4=h4, h5=h5
+                 h1=h1, h2=h2, h3=h3, h4=h4, h5=h5,
+                 pH_opt=pH_opt, nitr.acid=nitr.acid, acid.loss=acid.loss, ph.mod=ph.mod, pH_mode=pH_mode,
+                 fert=fert
     )
     y       <- y                                           #state variable starting values for numeric solver from parameters file. 
     ST      <- runsteady(y=y,func=CN_NUE_model,parms=pars) #solve model

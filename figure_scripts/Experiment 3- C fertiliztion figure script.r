@@ -6,6 +6,9 @@ library(wesanderson)
 #load experiment data.
 d <- readRDS('experiment_output/C_fert.experiment.rds')
 
+#set output path
+output.path <- 'figures/Experiment 3. C-fertilization figure.png'
+
 #we have 3 levels of clay: 0, 1, 2
 #we have 3 levels of CN  :30,60,80
 
@@ -29,7 +32,7 @@ limy <- c(0,260)
 o.lab = 1.5
 
 #save dimensions, destination
-png(filename='figures/Experiment 3. C-fertilization figure.png',width=8.1,height=7.2,units='in',res=300)
+png(filename=output.path,width=8.1,height=7.2,units='in',res=300)
 
 
 #setup panels

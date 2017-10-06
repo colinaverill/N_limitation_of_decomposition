@@ -4,7 +4,7 @@ CN_NUE_model<- function(t,y,pars){
     
     #C fluxes
     DEATH.C      <- h1*B^1.5
-    DECOMP.C     <- v1*B*C / (k1 + C)
+    DECOMP.C     <- v1*B*C / (k1 + C) * (1 - ((7-pH)*ph.mod))
     exo.loss.C   <- h5*C
     POM2MOM.C    <- h3*C
     SORPTION.C   <- v2*(POM2MOM.C+DEATH.C) / (k2 + POM2MOM.C+DEATH.C)
@@ -21,6 +21,7 @@ CN_NUE_model<- function(t,y,pars){
     SORPTION.B.N <- (DEATH.N  /(POM2MOM.N+DEATH.N))*SORPTION.N
     SORPTION.P.N <- (POM2MOM.N/(POM2MOM.N+DEATH.N))*SORPTION.N
     DESORPTION.N <- DESORPTION.C/(M/N2)
+    
     
     #MINERALIZATION-IMMOBILIZATION.
     #N uptake minus demand. If in excess, positive. If limited, negative.
@@ -41,9 +42,14 @@ CN_NUE_model<- function(t,y,pars){
       }
     }
     
+    #Drop in N fertilization when day = fert.day
+    #if(day > fert.day){
+    #  fert = fert.level
+    #}
+    
     #leaching/plant uptake happens on post-mineralization/immobilization inorganic N pool.
     #Make sure to include inputs to N4 from imperfect NUE values
-    INORG.N.LOSS <- h4*(N4 + DECOMP.N*(1-NUE) + mineralization - immobilization)
+    INORG.N.LOSS <- h4*(N4 + DECOMP.N*(1-NUE) + fert + mineralization - immobilization)
     
     #OVERFLOW RESPIRATION
     #excess C uptake must go somewhere because mass balance.
@@ -54,16 +60,35 @@ CN_NUE_model<- function(t,y,pars){
       overflow.R <- DECOMP.C*CUE - (DECOMP.N*NUE + immobilization)*BN
     }
     
+    #pH sub-routine.
+    #acidification is linked to nitrification.
+    #nitrification is linear with respect to the sum of all inputs to the inorganic N pool.
+    #nitrification decreases as pH decreases.
+    nitrif <- (pH / pH_opt)*(DECOMP.N*(1-NUE) + mineralization + fert)
+    proton_gain <- nitrif * nitr.acid
+    proton_loss <- protons* acid.loss
+    #Soil Buffering - this never kicks in with our parameter set.
+    if (protons < 1e-07) {proton_loss = 0} else {proton_loss = proton_loss} #pH cannot rise above 7
+    if (protons > 1e-04) {proton_gain = 0} else {proton_gain = proton_gain} #pH cannot drop below 4
+    
     #ODEs
+    dBdt  <- (CUE * DECOMP.C) - DEATH.C - overflow.R
     dCdt  <- I + (DEATH.C - SORPTION.B.C) + DESORPTION.C - DECOMP.C - SORPTION.P.C - exo.loss.C
     dMdt  <- SORPTION.C - DESORPTION.C
-    dBdt  <- (CUE * DECOMP.C) - DEATH.C - overflow.R
     dN1dt <- (I/IN) + (DEATH.N - SORPTION.B.N) + DESORPTION.N - DECOMP.N - SORPTION.P.N - exo.loss.N
     dN2dt <- SORPTION.N - DESORPTION.N
-    dN3dt <- DECOMP.N*NUE + immobilization - mineralization - DEATH.N
-    dN4dt <- DECOMP.N*(1-NUE) + mineralization - immobilization - INORG.N.LOSS
+    dN3dt <- (NUE * DECOMP.N) + immobilization - mineralization - DEATH.N
+    dN4dt <- DECOMP.N*(1-NUE) + mineralization + fert - immobilization - INORG.N.LOSS
+    dPROTdt <- proton_gain - proton_loss
     
-    #list of shit to solve for.
-    list(c(dCdt,dMdt,dBdt,dN1dt,dN2dt,dN3dt,dN4dt))
+    #respiration
+    R  <- (1-CUE)*DECOMP.C + overflow.R
+    
+    #pH mode toggles whether or not pH is constant (5.5), or emergent from proton pool.
+    #if(pH_mode == T){pH <- -log10(protons)}
+    #if(pH_mode == F){pH = 5.5}
+    
+    #list of differential equations to solve for.
+    list(c(dCdt,dMdt,dBdt,dN1dt,dN2dt,dN3dt,dN4dt,dPROTdt))
   })
 }
