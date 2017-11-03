@@ -47,7 +47,7 @@ abline(v=25.21, lty = 3)
 Axis(side=2)
 mtext('C:N = 30'    , side = 3, line = .5, cex = o.lab)
 mtext('C limitation', side = 3, line = 3,  cex = 1.2)
-mtext('a.', side =3, adj = 0.975, line = -1.25)
+mtext('(a)', side =3, adj = 0.975, line = -1.4)
 legend(30,150,c('total C','POM','MAOM','microbial','begin +N'), 
        lwd=c(2,2,2,2,1), col=c('black',cols[1],cols[3],cols[5],'black'), lty=c(1,1,1,1,3), 
        bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.5, seg.len=1.5)
@@ -64,7 +64,7 @@ abline(v=25.21, lty = 3)
 mtext('C:N = 60', side = 3, line = .5,         cex = o.lab)
 mtext('mild N limitation', side = 3, line = 3, cex = 1.2)
 
-mtext('b.', side =3, adj = 0.975, line = -1.25)
+mtext('(b)', side =3, adj = 0.975, line = -1.4)
 
 
 dd <- pl1.80
@@ -77,7 +77,7 @@ abline(v=25.21, lty = 3)
 mtext('C:N = 80', side = 3, line = .5,          cex = o.lab)
 mtext('severe N limitation', side = 3, line = 3, cex = 1.2)
 mtext('low sorption',side = 4, line =  1, las = 0, cex = 1.3)
-mtext('c.', side =3, adj = 0.975, line = -1.25)
+mtext('(c)', side =3, adj = 0.975, line = -1.4)
 
 
 dd <- pl2.30
@@ -89,7 +89,7 @@ lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
 Axis(side=1, labels=T)
 Axis(side=2)
-mtext('d.', side =3, adj = 0.975, line = -1.25)
+mtext('(d)', side =3, adj = 0.975, line = -1.4)
 
 
 dd <- pl2.60
@@ -100,7 +100,7 @@ lines(smooth.spline(dd$M   ~ dd$year), lwd=2, col=cols[3])
 lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
 Axis(side=1, labels=T)
-mtext('e.', side =3, adj = 0.975, line = -1.25)
+mtext('(e)', side =3, adj = 0.975, line = -1.4)
 
 
 dd <- pl2.80
@@ -112,7 +112,7 @@ lines(smooth.spline(dd$B   ~ dd$year), lwd=2, col=cols[5])
 abline(v=25.21, lty = 3)
 Axis(side=1, labels=T)
 mtext('high sorption',side = 4, line = 1, las = 0, cex = 1.3)
-mtext('f.', side =3, adj = 0.975, line = -1.25)
+mtext('(f)', side =3, adj = 0.975, line = -1.25)
 
 
 #outer labels

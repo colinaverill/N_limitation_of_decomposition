@@ -2,7 +2,7 @@ Created by Colin Averill and Bonnie Waring. October 6, 2017
 caverill@bu.edu
 bonnie.waring@usu.edu
 
-This repository contains all necessary code to replicate model experiments and figures described in Averill and Waring 2017.
+This repository contains all necessary code to replicate model experiments and figures described in Averill and Waring 2017. Nitrogen limitation of decomposition and decay: how can it occur? Global Change Biology.
 This work was done using:
 R version 3.4.0 (2017-04-21)
 Platform: x86_64-pc-linux-gnu (64-bit)

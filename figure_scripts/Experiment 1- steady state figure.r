@@ -30,10 +30,10 @@ lines(smooth.spline(no.clay$B  ~no.clay$CN), lwd=2, col=cols[5])
 mtext('no sorption', line = 0.2)
 mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
 mtext('input C:N', side = 1, line = 2.5, cex = 0.7)
-mtext('a.', side =3, adj = 0.025, line = -1.25)
+mtext('(a)', side =3, adj = 0.025, line = -1.4)
 
 #legend
-legend(30,145,c('total C','POM','MAOM','microbial'), lwd=c(3,2,2,2), col=c('black',cols[1],cols[3],cols[5]), bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.2, seg.len=1)
+legend(30,140,c('total C','POM','MAOM','microbial'), lwd=c(3,2,2,2), col=c('black',cols[1],cols[3],cols[5]), bty='n', y.intersp = 1, x.intersp = 0.75, cex=1.2, seg.len=1)
 
 #lo clay panel 
 plot(tot ~ CN, data = lo.clay, ylim = limy, cex = 0, ylab = NA, xlab = NA)
@@ -45,7 +45,7 @@ lines(smooth.spline(lo.clay$B  ~lo.clay$CN), lwd=2, col=cols[5])
 mtext('low sorption', line = 0.2)
 mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
 mtext('input C:N', side = 1, line = 2.5, cex = 0.7)
-mtext('b.', side =3, adj = 0.025, line = -1.25)
+mtext('(b)', side =3, adj = 0.025, line = -1.4)
 
 #hi clay panel 
 plot(tot ~ CN, data = hi.clay, ylim = limy, cex = 0, ylab = NA, xlab = NA)
@@ -57,7 +57,7 @@ lines(smooth.spline(hi.clay$B  ~hi.clay$CN), lwd=2, col=cols[5])
 mtext('high sorption', line = 0.2)
 mtext(expression(paste('mg C (g soil)'^'-1')), side=2, line = 2, las = 0, cex = 0.7)
 mtext('input C:N', side = 1, line = 2.5, cex = 0.7)
-mtext('c.', side =3, adj = 0.025, line = -1.25)
+mtext('(c)', side =3, adj = 0.025, line = -1.4)
 
 #inset panel 1
 #par(fig=c(.05, .125, .620, .770), new = T, mar = c(0,0,0,0))
